@@ -22,16 +22,12 @@ class displayFragment  : Fragment()  {
     ): View? {
         val args = arguments
         val index = args!!.getString("index", "aa")
-        imageView.setImageURI(index)
+
 
         // Inflate the layout for this fragment
         val view=inflater.inflate(R.layout.fragment_display, container, false)
 
         return view;
     }
-
-}
-
-private fun ImageView?.setImageURI(index: String?) {
 
 }

@@ -76,6 +76,7 @@ class MainActivity : AppCompatActivity() {
 
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     val savedUri = Uri.fromFile(tempFile)
+
                    // imageView!!.setImageURI(savedUri)
                     val msg = "KAYDEDİLDİ: $tempFile"
                     Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
@@ -83,6 +84,7 @@ class MainActivity : AppCompatActivity() {
 
 
                      val bundle=Bundle()
+                    val a=savedUri.toString()
                     bundle.putString("photo",savedUri.toString())
 
 
