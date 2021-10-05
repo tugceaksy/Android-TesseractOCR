@@ -20,18 +20,32 @@
         android:elevation="2dp" />
 
 
+    <!--    <ImageView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:id="@+id/image_view">-->
 
+
+<!--    </ImageView>-->
     <androidx.camera.view.PreviewView
         android:id="@+id/viewFinder"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <ImageView
-        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/image_view">
+        tools:layout_editor_absoluteX="38dp"
+        tools:layout_editor_absoluteY="170dp" />
+
+    <FrameLayout
+
+        android:id="@+id/flfragment"
+        android:layout_width="407dp"
+        android:layout_height="600dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
 
-    </ImageView>
+    </FrameLayout>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -16,8 +16,10 @@ import androidx.core.content.ContextCompat
 import java.util.concurrent.Executors
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
 import java.nio.ByteBuffer
@@ -36,8 +38,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        imageView = findViewById(R.id.image_view)
-
+        //imageView = findViewById(R.id.image_view)
+         val displayFragment=displayFragment()
 
 
         // Request camera permissions
@@ -49,7 +51,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Set up the listener for take photo button
-        camera_capture_button.setOnClickListener { takePhoto() }
+        camera_capture_button.setOnClickListener { takePhoto()
+            camera_capture_button.isVisible=false
+
+        }
 
         outputDirectory = getOutputDirectory()
 
@@ -74,30 +79,32 @@ class MainActivity : AppCompatActivity() {
                     Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
                 }
 
+
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     val savedUri = Uri.fromFile(tempFile)
+                    val base64=savedUri.toString()
+                    val bundle = Bundle()
+                    bundle.putString("photo",base64)
+                    val displayFragment=displayFragment()
+                    displayFragment.arguments=bundle
 
-                   // imageView!!.setImageURI(savedUri)
+                    // imageView!!.setImageURI(savedUri)
                     val msg = "KAYDEDİLDİ: $tempFile"
                     Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
                     Log.d(TAG, msg)
+supportFragmentManager.beginTransaction().apply {
+    replace(R.id.flfragment,displayFragment())
+    commit()
+
+}
 
 
-                     val bundle=Bundle()
-                    val a=savedUri.toString()
-                    bundle.putString("photo",savedUri.toString())
 
 
-                    val fragmentManager=supportFragmentManager
-                    val fragmanTranscaction=fragmentManager.beginTransaction()
-                    val displayFragment=displayFragment()
-                    fragmanTranscaction.replace(R.id.layout,displayFragment).commit()
-                    val f = displayFragment()
-                    // Supply index input as an argument.
-                    // Supply index input as an argument.
-                    val args = Bundle()
-                    args.putString("index",savedUri.toString())
-                    f.setArguments(args)
+
+
+
+
 
                 }
             })
