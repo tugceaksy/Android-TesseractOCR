@@ -1,36 +1,31 @@
 package com.tugceaksoy.denemekt
 
+import android.content.ContentResolver
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.Manifest
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Picture
-import android.graphics.drawable.PictureDrawable
 import android.net.Uri
+import android.provider.MediaStore
 import android.util.Log
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import java.util.concurrent.Executors
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelProvider
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
-import java.nio.ByteBuffer
-import java.text.SimpleDateFormat
-import java.util.*
 import java.util.concurrent.ExecutorService
 typealias LumaListener = (luma: Double) -> Unit
 
-class MainActivity : AppCompatActivity() {
+open class MainActivity : AppCompatActivity(),LifecycleOwner{
     private var imageCapture: ImageCapture? = null
-    private var imageView : ImageView? = null
+
+    //created my viewmodel object to have a referance and use its methods and propertys
+    var viewModel: ViewModelClass? = null
 
     private lateinit var outputDirectory: File
     private lateinit var cameraExecutor: ExecutorService
@@ -38,8 +33,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        //imageView = findViewById(R.id.image_view)
-         val displayFragment=displayFragment()
+
+        viewModel=ViewModelProvider(this).get(ViewModelClass::class.java)
+        viewModel!!.setActivityContent(this)
 
 
         // Request camera permissions
@@ -53,11 +49,8 @@ class MainActivity : AppCompatActivity() {
         // Set up the listener for take photo button
         camera_capture_button.setOnClickListener { takePhoto()
             camera_capture_button.isVisible=false
-
         }
-
         outputDirectory = getOutputDirectory()
-
         cameraExecutor = Executors.newSingleThreadExecutor()
     }
 
@@ -66,11 +59,8 @@ class MainActivity : AppCompatActivity() {
         val imageCapture = imageCapture ?: return
 
 
-
-        val tempFile = File.createTempFile("kapp", ".jpg", getExternalCacheDir())
-
         // Create output options object which contains file + metadata
-        val outputOptions = ImageCapture.OutputFileOptions.Builder(tempFile).build()
+        val outputOptions = ImageCapture.OutputFileOptions.Builder(viewModel!!.tempFile).build()
 
 
         imageCapture.takePicture(
@@ -81,31 +71,22 @@ class MainActivity : AppCompatActivity() {
 
 
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                    val savedUri = Uri.fromFile(tempFile)
-                    val base64=savedUri.toString()
+                    val savedUri = Uri.fromFile(viewModel!!.tempFile)
+
+
+                    val pathString=savedUri.toString()
                     val bundle = Bundle()
-                    bundle.putString("photo",base64)
+                    bundle.putString("photo",pathString)
                     val displayFragment=displayFragment()
                     displayFragment.arguments=bundle
-
-                    // imageView!!.setImageURI(savedUri)
-                    val msg = "KAYDEDİLDİ: $tempFile"
-                    Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+                    val msg = "KAYDEDİLDİ: $viewModel.tempFile"
                     Log.d(TAG, msg)
-supportFragmentManager.beginTransaction().apply {
-    replace(R.id.flfragment,displayFragment())
-    commit()
+
+                    supportFragmentManager.beginTransaction().apply {
+                     replace(R.id.flfragment,displayFragment)
+                        commit()
 
 }
-
-
-
-
-
-
-
-
-
                 }
             })
     }

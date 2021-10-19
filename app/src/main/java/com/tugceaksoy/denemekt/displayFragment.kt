@@ -1,5 +1,6 @@
 package com.tugceaksoy.denemekt
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,23 +8,35 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
-import androidx.core.net.toUri
-import kotlinx.android.synthetic.*
-import kotlinx.android.synthetic.main.fragment_display.view.*
-import androidx.appcompat.app.AppCompatActivity
-import android.R
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProvider
 import com.tugceaksoy.denemekt.databinding.FragmentDisplayBinding
+import com.googlecode.tesseract.android.TessBaseAPI;
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.widget.Toast
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
+import java.time.Duration
+import android.provider.MediaStore
+
+import android.R.attr.bitmap
+
+
+
 
 
 class displayFragment  : Fragment()  {
     private var image_view : ImageView? = null
-    var mBining : FragmentDisplayBinding? = null
-
+    private lateinit var mBining:FragmentDisplayBinding
+    var viewModel: ViewModelClass? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mBining = dataBinding as FragmentDisplayBinding
+
+        viewModel= ViewModelProvider(this).get(ViewModelClass::class.java)
+        viewModel!!.setActivityContent(activity as MainActivity)
+
 
 
     }
@@ -32,21 +45,39 @@ class displayFragment  : Fragment()  {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        return view;
+        mBining = DataBindingUtil.inflate(inflater,R.layout.fragment_display,container,false)
+        return mBining.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         val bundle = this.arguments
         if (bundle != null) {
-            val gelenuri = bundle!!.getString("photo","uri gelmedi")
-            val uri =gelenuri.toUri()
-            image_view?.setImageURI(uri)
+         val uri = bundle ["photo"]
+            mBining.imageView?.setImageURI(Uri.parse(uri!! as String))
+
+            mBining.button.setOnClickListener{
+
+                val bitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, Uri.parse(uri!! as String))
+                viewModel!!.transformToText(bitmap)
+
+                var fr = getFragmentManager()?.beginTransaction()
+                fr?.replace(R.id.flfragment, ScannedFragment())
+                fr?.commit()
+            }
+
+
         }
 
+        mBining.button2.setOnClickListener {
+            val intent = Intent (activity, MainActivity::class.java)
+            startActivity(intent)
+        }
+
+
+
     }
+
 
 }
