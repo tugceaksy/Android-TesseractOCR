@@ -5,8 +5,10 @@ import java.io.*
 
 import android.app.ProgressDialog
 import android.graphics.*
+import android.os.Bundle
 import com.googlecode.tesseract.android.TessBaseAPI
 import android.os.Environment
+import androidx.fragment.app.Fragment
 
 class ViewModelClass() : ViewModel() {
     var activity :AppCompatActivity? = null
@@ -17,11 +19,10 @@ class ViewModelClass() : ViewModel() {
 
 
 
-    fun transformToText(bitmap: Bitmap){
+    fun transformToText(bitmap: Bitmap): String?{
     val ocrManager=OcrManager()
-        ocrManager.initAPI()
-        ocrManager.startRecognize(bitmap)
-
+        val sonuc =ocrManager.startRecognize(bitmap)
+        return sonuc
 }
 
 

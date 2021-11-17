@@ -30,6 +30,7 @@
     <androidx.camera.view.PreviewView
         android:id="@+id/viewFinder"
         android:layout_width="match_parent"
+        app:scaleType="fitCenter"
         android:layout_height="match_parent"
         tools:layout_editor_absoluteX="38dp"
         tools:layout_editor_absoluteY="170dp" />

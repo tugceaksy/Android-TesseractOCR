@@ -16,6 +16,7 @@ import android.content.ClipData
 
 import android.content.Intent
 import android.os.Build
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 
 
@@ -32,6 +33,8 @@ class ScannedFragment : Fragment() {
 
 
         val displayFragment=displayFragment()
+       val gelen= this.arguments
+        Obinding.textView2.setText(gelen)
 
 
             Obinding.button3.setOnClickListener {
@@ -52,13 +55,18 @@ class ScannedFragment : Fragment() {
 }
 
 
-   fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
 
 
-        return inflater.inflate(R.layout.fragment_scanned, container, false)
 
+}
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        Obinding = DataBindingUtil.inflate(inflater,R.layout.fragment_scanned,container,false)
+
+        return Obinding.root
     }
-
-
-}}
+}

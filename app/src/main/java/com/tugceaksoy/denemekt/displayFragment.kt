@@ -21,9 +21,8 @@ import java.time.Duration
 import android.provider.MediaStore
 
 import android.R.attr.bitmap
-
-
-
+import android.content.ContentValues.TAG
+import android.util.Log
 
 
 class displayFragment  : Fragment()  {
@@ -59,12 +58,17 @@ class displayFragment  : Fragment()  {
 
             mBining.button.setOnClickListener{
 
-                val bitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, Uri.parse(uri!! as String))
-                viewModel!!.transformToText(bitmap)
-
-                var fr = getFragmentManager()?.beginTransaction()
-                fr?.replace(R.id.flfragment, ScannedFragment())
-                fr?.commit()
+             val bitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, Uri.parse(uri!! as String))
+                val sonuc = viewModel!!.transformToText(bitmap)
+                val bundle2 = Bundle()
+                bundle2.putString("text", sonuc.toString())
+                Log.d(TAG, "teseract result:  " + sonuc.toString())
+                val scannedFragment=ScannedFragment()
+          
+                scannedFragment.arguments=bundle2
+                requireActivity().supportFragmentManager.beginTransaction()
+                    .replace(R.id.flfragment, scannedFragment)
+                    .commit()
             }
 
 

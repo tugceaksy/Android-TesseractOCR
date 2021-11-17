@@ -17,13 +17,17 @@ import android.content.res.AssetManager
 
 
 class MainApplication : Application() {
-    var instance: MainApplication? = null
+
+    companion object{
+       var instance: MainApplication? = null
+    }
+
 
     override fun onCreate() {
         super.onCreate()
         // start copy file here, copy eng.trainneddata from assets to external storage ../tessdata/vie.trainneddata
         // the data path, must contain sub folder call "tessdata", if not the lib will not work.
-   instance=MainApplication()
+        instance = this
         copyTessDataForTextRecognizor()
     }
 

@@ -85,8 +85,7 @@ open class MainActivity : AppCompatActivity(),LifecycleOwner{
                     supportFragmentManager.beginTransaction().apply {
                      replace(R.id.flfragment,displayFragment)
                         commit()
-
-}
+                    }
                 }
             })
     }
